@@ -24,7 +24,7 @@ onPasswordChange = (event) =>{
 }
 
 onSubmitRegister = () =>{
-  fetch('http://localhost:3001/register', {
+  fetch('https://radiant-hamlet-18347.herokuapp.com/register', {
     method:'post',
     headers:{
       'Content-Type':'application/json'},
