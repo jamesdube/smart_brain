@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import Particles from 'react-particles-js';
-import Navigation from './components/Navigation/Navigation'
-import Logo from './components/Logo/Logo'
-import SignIn from './components/SignIn/SignIn'
-import Register from './components/Register/Register'
-import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
-import Rank from './components/Rank/Rank'
-import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import './App.css';
+
+import Navigation from './components/Navigation'
+import Logo from './components/Logo'
+import SignIn from './components/SignIn'
+import Register from './components/Register'
+import ImageLinkForm from './components/ImageLinkForm'
+import Rank from './components/Rank'
+import FaceRecognition from './components/FaceRecognition'
 
 const particlesOptions = {
   particles: {
     number: {
-      value : 30,
+      value : 35,
     density: {
         enable:true,
-        value_area:900
+        value_area:500
       }
     }
   }
@@ -115,7 +116,7 @@ onRouteChange = (route) =>{
   render() {
     return (
       <div className="App">
-      {<Particles className='particles' 
+      {<Particles className="particles" 
               params={particlesOptions}
             />}
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
