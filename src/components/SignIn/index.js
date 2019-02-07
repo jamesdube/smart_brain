@@ -1,22 +1,9 @@
 import React, {useState} from 'react';
-// import { Prompt } from 'react-router'
-import { Redirect } from 'react-router-dom'
-
 import history from '../../history'
 
 function SignIn(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [redirect, setRedirect] = useState(false);
-
-  let { from } = { from: { pathname: "/User" } };
-
-
-const login = () => {
-  props.fakeAuth.isAuthenticated(() => {
-    setRedirect(true );
-  });
-};
 
 const onEmailChange = (event) =>{
   setEmail(event.target.value)
@@ -43,10 +30,6 @@ const onSubmitSignIn = () =>{
       }
     })
 }
-
-  if(redirect){
-    return <Redirect to={from} />
-  }else{
     return(
       <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw5 shadow-5 center">
         <main className="pa4 black-80">
@@ -82,13 +65,13 @@ const onSubmitSignIn = () =>{
             </div>
             <div className="lh-copy mt3">
                 <p 
+                onClick={ () => history.push("/Register")}
                 className="f6 link dim black db pointer">Register</p>
             </div>
           </div>
         </main>
       </article>
       );
-  }
 }
 
 export default SignIn

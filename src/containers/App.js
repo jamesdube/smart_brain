@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Route, Router, Switch, Redirect } from 'react-router-dom';
 import Particles from 'react-particles-js';
 import './App.css';
-import history from './history'
 
-import SignIn from './components/SignIn'
-import Register from './components/Register'
-import Screen from './Screen'
-import Navigation from './components/Navigation'
+// import Component 
+import history from '../history'
+import SignIn from '../components/SignIn'
+import Register from '../components/Register'
+import Navigation from '../components/Navigation'
+import Screen from '../Screen'
 
+// particle
 const particlesOptions = {
   particles: {
     number: {
@@ -20,7 +22,7 @@ const particlesOptions = {
     }
   }
 }
-
+// authenticator
 const fakeAuth = {
   isAuthenticated: false,
   authenticate(cb) {
@@ -32,7 +34,7 @@ const fakeAuth = {
     setTimeout(cb, 100);
    }
 };
-
+// initial state
 const initialState = {
   id: '',
   name: '',
@@ -57,13 +59,15 @@ function App(){
     <Router history={history}>
       <div className="App">
       {<Particles className="particles" 
-              params={particlesOptions}
+        params={particlesOptions}
         />}
       <Navigation fakeAuth={fakeAuth}/>
       <Switch>
         <Route exact path="/" component={() => <SignIn loadUser={loadUser} fakeAuth={fakeAuth}/>}/>
         <Route path="/Register" component={() => <Register loadUser={loadUser} fakeAuth={fakeAuth}/>} />
-        <Private path="/User" component={() => <Screen id={user.id} name={user.name} entries={user.entries} loadUser={loadUser}/>} fakeAuth={fakeAuth}/>
+        <Private path="/User" component={
+          () => <Screen id={user.id} name={user.name} entries={user.entries} loadUser={loadUser}/>} fakeAuth={fakeAuth}
+        />
       </Switch>
       </div>
     </Router>

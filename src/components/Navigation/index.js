@@ -5,21 +5,21 @@ const Navigation = withRouter((props) =>{
 	if(props.fakeAuth.isAuthenticated){
 		return(
 			<nav style={{display: 'flex', justifyContent:'flex-end'}}>
-				<p className='f3 link dim black underline pa3 pointer' onClick={() => {
+				<p className="f3 link dim black underline pa3 pointer" onClick={() => {
 					props.fakeAuth.signout(() => props.history.push("/"));
 					}}>
 					Sign Out
 				</p>
-		</nav>
+			</nav>
 		)
 	}else{
 		return(
 			<nav style={{display: 'flex', justifyContent:'flex-end'}}>
-				<p className='f3 link dim black underline pa3 pointer' onClick={() => props.history.push("/")}>
+				<p className="f3 link dim black underline pa3 pointer" onClick={() => props.history.push("/")}>
 					Sign In
 				</p>
 
-				<p className='f3 link dim black underline pa3 pointer' onClick={() => props.history.push("/Register")}>
+				<p className="f3 link dim black underline pa3 pointer" onClick={() => props.history.push("/Register")}>
 					Register
 				</p>
 			</nav>
