@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { Route, Router, Switch, Redirect } from 'react-router-dom';
 import Particles from 'react-particles-js';
 import './App.css';
+import history from './history'
 
-import Navigation from './components/Navigation'
-import Logo from './components/Logo'
 import SignIn from './components/SignIn'
 import Register from './components/Register'
-import ImageLinkForm from './components/ImageLinkForm'
-import Rank from './components/Rank'
-import FaceRecognition from './components/FaceRecognition'
+import Screen from './Screen'
+import Navigation from './components/Navigation'
 
 const particlesOptions = {
   particles: {
@@ -21,123 +20,64 @@ const particlesOptions = {
     }
   }
 }
+
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    this.isAuthenticated = true;
+    setTimeout(cb, 100); // fake async
+  },
+  signout(cb) {
+    this.isAuthenticated = false;
+    setTimeout(cb, 100);
+   }
+};
+
 const initialState = {
-      input: '',
-      imageUrl:'',
-      box:{},
-      route:'signin',
-      isSignedIn: false,
-      user:{
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-        }
-    }
-class App extends Component {
-  constructor(){
-    super();
-    this.state = initialState
-  }
-
-loadUser = (data) =>{
-  this.setState({user:{
-    id: data.id,
-    name: data.name,
-    email: data.email,
-    entries: data.entries,
-    joined: data.joined
-  }})
+  id: '',
+  name: '',
+  email: '',
+  entries: 0,
+  joined: ''
 }
 
-calculateFaceLocation = (data) =>{
-  const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-  const image = document.getElementById('inputimage');
-  const width = Number(image.width);
-  const height = Number(image.height);
-  return{
-    leftCol: clarifaiFace.left_col * width,
-    topRow: clarifaiFace.top_row * height,
-    rightCol: width - (clarifaiFace.right_col * width),
-    bottomRow: height - (clarifaiFace.bottom_row * height)
-  }
-}
+function App(){
+  const [user,setUser] = useState(initialState) 
 
-displayFace = (box) =>{
-  this.setState({box: box })
-}
-
-onInputChange = (event) =>{
-  this.setState({input: event.target.value})
-}
-
-onButtonSubmit = () =>{
-  this.setState({imageUrl: this.state.input})
-   fetch('https://radiant-hamlet-18347.herokuapp.com/imageurl', {
-      method:'post',
-      headers:{
-        'Content-Type':'application/json'},
-      body: JSON.stringify({
-        input:this.state.input
-        })
+  const loadUser = (data) =>{
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
     })
-   .then(response=> response.json())
-    .then(response =>{
-     if(response){
-       fetch('https://radiant-hamlet-18347.herokuapp.com/image', {
-        method:'put',
-        headers:{
-          'Content-Type':'application/json'},
-        body: JSON.stringify({
-          id:this.state.user.id
-          })
-      })
-        .then(response => response.json())
-        .then(count =>{
-          this.setState(Object.assign(this.state.user,{entries:count}))
-        })
-        .catch(console.log)
-        } 
-        this.displayFace(this.calculateFaceLocation(response))
-    })
-    .catch(err => console.log(err))
-}
-
-onRouteChange = (route) =>{
-  if(route === 'signout'){
-    this.setState(initialState)
-  }else if(route === 'home'){
-    this.setState({isSignedIn:true})
   }
-  this.setState({route: route})
-}
-
-  render() {
-    return (
+  return (
+    <Router history={history}>
       <div className="App">
       {<Particles className="particles" 
               params={particlesOptions}
-            />}
-        <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
-        {this.state.route === 'home'
-          ?<div> 
-            <Logo />
-            <Rank name={this.state.user.name} entries={this.state.user.entries}/>
-            <ImageLinkForm  onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-            <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/> 
-           </div>
-          :(
-            this.state.route ==='signin'
-            ?<SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-            :<Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-          )
-        }
-
-
+        />}
+      <Navigation fakeAuth={fakeAuth}/>
+      <Switch>
+        <Route exact path="/" component={() => <SignIn loadUser={loadUser} fakeAuth={fakeAuth}/>}/>
+        <Route path="/Register" component={() => <Register loadUser={loadUser} fakeAuth={fakeAuth}/>} />
+        <Private path="/User" component={() => <Screen id={user.id} name={user.name} entries={user.entries} loadUser={loadUser}/>} fakeAuth={fakeAuth}/>
+      </Switch>
       </div>
-    );
-  }
+    </Router>
+  );
+}
+
+function Private({component: Component, ...rest}) {
+  return (
+    <Route {...rest} render={(props) => fakeAuth.isAuthenticated ? 
+      (<Component {...props} />) 
+      :(<Redirect to={{pathname: "/"}}/>)
+      }
+    />
+  );
 }
 
 export default App;
