@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { PropTypes as T } from 'prop-types';
 import history from '../../history'
 
 function SignIn(props) {
@@ -74,4 +75,13 @@ const onSubmitSignIn = () =>{
       );
 }
 
+SignIn.proptypes = {
+  loadUser: T.object.isRequired,
+  fakeAuth: T.object.isRequired,
+  history: T.object
+}
+
+SignIn.defaultProps = {
+  history: {}
+}
 export default SignIn

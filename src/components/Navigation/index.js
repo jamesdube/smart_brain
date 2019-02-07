@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes as T } from 'prop-types';
 import {withRouter} from "react-router-dom";
 
 const Navigation = withRouter((props) =>{
@@ -26,5 +27,16 @@ const Navigation = withRouter((props) =>{
 		)
 	}
 })
+
+Navigation.propTypes = {
+	fakeAuth: T.shape({
+		isAuthenticated: T.bool,
+		signout: T.func
+	}).isRequired,
+	history: T.object
+}
+Navigation.defaultProps = {
+	histrory: {}
+}
 
 export default Navigation

@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes as T } from 'prop-types';
 import './index.css';
 
 const FaceRecognition = ({imageUrl, box }) =>{
@@ -10,6 +11,14 @@ const FaceRecognition = ({imageUrl, box }) =>{
 			</div>
 		</div>
 	);
+}
+FaceRecognition.propTypes = {
+	imageUrl: T.string.isRequired,
+	box: T.object
+}
+
+FaceRecognition.defaultProps = {
+	box: {}
 }
 
 export default FaceRecognition

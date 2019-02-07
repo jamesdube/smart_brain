@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { PropTypes as T } from 'prop-types';
 import history from '../../history'
 
 function Register(props) {
@@ -82,6 +83,15 @@ const onSubmitRegister = () =>{
 		</main>
 	 </article>
 	 );
+}
+
+Register.proptypes = {
+  loadUser: T.object.isRequired,
+  fakeAuth: T.object.isRequired,
+  history: T.object
+}
+Register.defaultProps = {
+  history: {}
 }
 
 export default Register

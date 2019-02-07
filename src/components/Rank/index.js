@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes as T } from 'prop-types';
 
 const Rank = ({name, entries}) =>{
 	return(
@@ -11,6 +12,16 @@ const Rank = ({name, entries}) =>{
 			</div>
 	</div>
 	);
+}
+
+Rank.propTypes = {
+	name: T.string,
+	entries: T.string
+}
+
+Rank.defaultProps = {
+	name: '',
+	entries: ''
 }
 
 export default Rank

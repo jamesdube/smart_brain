@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PropTypes as T } from 'prop-types';
 
 //import component
 import Logo from '../components/Logo'
@@ -72,6 +73,14 @@ function Screen(props) {
             <FaceRecognition box={box} imageUrl={imageUrl}/> 
         </div>   
     );
+}
+
+Screen.propTypes = {
+  id: T.string.isRequired,
+  name: T.string.isRequired,
+  entries: T.number.isRequired,
+  loadUser: T.object.isRequired,
+  fakeAuth: T.object.isRequired
 }
 
 export default Screen;

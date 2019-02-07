@@ -5,6 +5,7 @@
   "dependencies": {
     "clarifai": "^2.8.0",
     "history": "^4.7.2",
+    "prop-types": "^15.6.2",
     "react": "16.8.0",
     "react-dom": "16.8.0",
     "react-particles-js": "^2.3.0",

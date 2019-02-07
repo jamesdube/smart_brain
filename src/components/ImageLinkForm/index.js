@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes as T } from 'prop-types';
 import './index.css';
 
 
@@ -16,6 +17,11 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit}) =>{
 		</div>
 	</div>
 	);
+}
+
+ImageLinkForm.propTypes = {
+	onInputChange: T.string.isRequired,
+	onButtonSubmit: T.string.isRequired
 }
 
 export default ImageLinkForm
