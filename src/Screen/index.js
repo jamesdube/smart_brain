@@ -13,6 +13,7 @@ function Screen(props) {
   const [box, setBox] = useState({});
   const [entries, setEntries] = useState(props.entries);
 
+//---------- method
   const calculateFaceLocation = (data) =>{
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
@@ -25,46 +26,44 @@ function Screen(props) {
     bottomRow: height - (clarifaiFace.bottom_row * height)
     }
   }
-
   const displayFace = (box) =>{
     setBox(box)
   }
-
   const onInputChange = (event) =>{
     setInput(event.target.value)
   }
-
-  const onButtonSubmit = () =>{
-    setImageUrl(input)
-    fetch('https://radiant-hamlet-18347.herokuapp.com/imageurl', {
-       method:'post',
-      headers:{
-        'Content-Type':'application/json'},
-      body: JSON.stringify({
-        input:input
-        })
-    })
-    .then(response=> response.json())
-      .then(response =>{
-      if(response){
-        fetch('https://radiant-hamlet-18347.herokuapp.com/image', {
-          method:'put',
+  const onButtonSubmit = async () => {
+      try{
+          setImageUrl(input)
+          const fetch1 = await fetch('https://radiant-hamlet-18347.herokuapp.com/imageurl', {
+          method:'post',
           headers:{
             'Content-Type':'application/json'},
           body: JSON.stringify({
-            id: props.id
+            input:input
+            })
           })
-        })
-          .then(response => response.json())
-          .then(count =>{
-            setEntries(count)
-          })
-          .catch(console.log)
-          } 
+          const response = await fetch1.json();
+          const respond = await response;
+          if(response){
+            const fetch2 = await fetch('https://radiant-hamlet-18347.herokuapp.com/image', {
+              method:'put',
+              headers:{
+                'Content-Type':'application/json'},
+              body: JSON.stringify({
+                id: props.id
+              })
+            })
+            const response2 = await fetch2.json();
+            await setEntries(response2)
+          }
           displayFace(calculateFaceLocation(response))
-      })
-      .catch(err => console.log(err))
+          return respond
+      }catch(error){
+        console.log(error, 'something went wrong')
+      }
   }
+//-------------- render
     return (
         <div> 
             <Logo />
@@ -76,11 +75,15 @@ function Screen(props) {
 }
 
 Screen.propTypes = {
-  id: T.string.isRequired,
-  name: T.string.isRequired,
-  entries: T.number.isRequired,
-  loadUser: T.object.isRequired,
-  fakeAuth: T.object.isRequired
+  id: T.number,
+  name: T.string,
+  entries: T.string,
+}
+
+Screen.defaultProps = {
+  id: 0,
+  name: '',
+  entries: ''
 }
 
 export default Screen;

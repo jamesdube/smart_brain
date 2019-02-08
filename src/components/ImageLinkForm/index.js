@@ -20,8 +20,8 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit}) =>{
 }
 
 ImageLinkForm.propTypes = {
-	onInputChange: T.string.isRequired,
-	onButtonSubmit: T.string.isRequired
+	onInputChange: T.func.isRequired,
+	onButtonSubmit: T.func.isRequired
 }
 
 export default ImageLinkForm

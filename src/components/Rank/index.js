@@ -12,7 +12,7 @@ const Rank = ({name, entries}) =>{
 			</div>
 	</div>
 	);
-}
+} 
 
 Rank.propTypes = {
 	name: T.string,

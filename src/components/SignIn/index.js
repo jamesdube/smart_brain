@@ -6,6 +6,7 @@ function SignIn(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+//---------- method
 const onEmailChange = (event) =>{
   setEmail(event.target.value)
 }
@@ -14,8 +15,9 @@ const onPasswordChange = (event) =>{
   setPassword(event.target.value)
 }
 
-const onSubmitSignIn = () =>{
-  fetch('https://radiant-hamlet-18347.herokuapp.com/signin', {
+const onSubmitSignIn = async () =>{
+  try{
+    const fetch1 = await fetch('https://radiant-hamlet-18347.herokuapp.com/signin', {
     method:'post',
     headers:{
       'Content-Type':'application/json'},
@@ -23,14 +25,23 @@ const onSubmitSignIn = () =>{
       email: email,
       password: password
     })
-  }).then(response => response.json())
-    .then(user =>{
-      if(user.id){
-        props.loadUser(user);
-        props.fakeAuth.authenticate(() => history.push("/User"));
-      }
-    })
+  })
+  const response = await fetch1.json();
+  const respond = await response;
+    if(response.id){
+      props.loadUser(response);
+      props.fakeAuth.authenticate(() => history.push("/User"));
+    }else{
+      alert('Wrong Email or Password!')
+      props.loadUser(0)
+    }
+  return respond
+  }catch(error){
+      console.log(error)
+  }
 }
+
+//----------- render
     return(
       <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw5 shadow-5 center">
         <main className="pa4 black-80">

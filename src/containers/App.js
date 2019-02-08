@@ -10,7 +10,7 @@ import Register from '../components/Register'
 import Navigation from '../components/Navigation'
 import Screen from '../Screen'
 
-// particle
+//-------particle
 const particlesOptions = {
   particles: {
     number: {
@@ -22,7 +22,7 @@ const particlesOptions = {
     }
   }
 }
-// authenticator
+//-------authenticator
 const fakeAuth = {
   isAuthenticated: false,
   authenticate(cb) {
@@ -34,7 +34,7 @@ const fakeAuth = {
     setTimeout(cb, 100);
    }
 };
-// initial state
+//-------initial state
 const initialState = {
   id: '',
   name: '',
@@ -46,6 +46,7 @@ const initialState = {
 function App(){
   const [user,setUser] = useState(initialState) 
 
+//-------- method
   const loadUser = (data) =>{
     setUser({
       id: data.id,
@@ -55,6 +56,7 @@ function App(){
       joined: data.joined
     })
   }
+//-------- render
   return (
     <Router history={history}>
       <div className="App">
@@ -66,7 +68,7 @@ function App(){
         <Route exact path="/" component={() => <SignIn loadUser={loadUser} fakeAuth={fakeAuth}/>}/>
         <Route path="/Register" component={() => <Register loadUser={loadUser} fakeAuth={fakeAuth}/>} />
         <Private path="/User" component={
-          () => <Screen id={user.id} name={user.name} entries={user.entries} loadUser={loadUser}/>} fakeAuth={fakeAuth}
+          () => <Screen id={user.id} name={user.name} entries={user.entries} />} fakeAuth={fakeAuth}
         />
       </Switch>
       </div>
