@@ -37,6 +37,9 @@ const onSubmitRegister = async () =>{
       if(response.id){
         props.loadUser(response)
         props.fakeAuth.authenticate(() => history.push("/User"));
+      }else if(!response.name || !response.email || !respond.password){
+        props.loadUser(0)
+        alert('please fill out the input')
       }else{
         props.loadUser(0)
         alert('Email already exist')

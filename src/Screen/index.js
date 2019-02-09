@@ -75,13 +75,12 @@ function Screen(props) {
 }
 
 Screen.propTypes = {
-  id: T.number,
+  id: T.number.isRequired,
   name: T.string,
   entries: T.string,
 }
 
 Screen.defaultProps = {
-  id: 0,
   name: '',
   entries: ''
 }
