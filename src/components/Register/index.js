@@ -1,25 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { PropTypes as T } from 'prop-types';
 import history from '../../history'
+import useInputChange from '../../dumb/useInputChange'
 
 function Register(props) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name,  setName] = useState('');
+  const email = useInputChange('')
+  const password = useInputChange('')
+  const name = useInputChange('')
 
 //---------- method
-const onNameChange = (event) =>{
-  setName(event.target.value)
-}
-
-const onEmailChange = (event) =>{
-  setEmail(event.target.value)
-}
-
-const onPasswordChange = (event) =>{
-  setPassword(event.target.value)
-}
-
 const onSubmitRegister = async () =>{
   try{
     const fetch1 = await fetch('https://radiant-hamlet-18347.herokuapp.com/register', {
@@ -27,22 +16,19 @@ const onSubmitRegister = async () =>{
       headers:{
         'Content-Type':'application/json'},
       body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password
+        name: name.value,
+        email: email.value,
+        password: password.value
       })
     })
     const response = await fetch1.json()
     const respond = await response
       if(response.id){
         props.loadUser(response)
-        props.fakeAuth.authenticate(() => history.push("/User"));
-      }else if(!response.name || !response.email || !respond.password){
-        props.loadUser(0)
-        alert('please fill out the input')
+        props.fakeAuth.authenticate(() => history.push(`/User/${response.name}`));
       }else{
         props.loadUser(0)
-        alert('Email already exist')
+        alert('email already exist')
       }
     return respond
   }catch(error){
@@ -63,7 +49,7 @@ const onSubmitRegister = async () =>{
             type="text" 
             name="name"  
             id="name"
-            onChange={onNameChange} 
+            {...name}
             />
         </div>
         <div className="mt3">
@@ -72,7 +58,7 @@ const onSubmitRegister = async () =>{
             type="email" 
             name="email-address"  
             id="email-address" 
-            onChange={onEmailChange}
+            {...email}
             />
         </div>
      	 	<div className="mv3">
@@ -81,7 +67,7 @@ const onSubmitRegister = async () =>{
             type="password" 
             name="password"  
             id="password"
-            onChange={onPasswordChange}
+            {...password}
             />
       		</div>
     		</fieldset>

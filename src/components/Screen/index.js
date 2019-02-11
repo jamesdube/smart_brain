@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { PropTypes as T } from 'prop-types';
 
 //import component
-import Logo from '../components/Logo'
-import ImageLinkForm from '../components/ImageLinkForm'
-import Rank from '../components/Rank'
-import FaceRecognition from '../components/FaceRecognition'
+import Logo from '../../dumb/Logo'
+import ImageLinkForm from '../../dumb/ImageLinkForm'
+import Rank from '../../dumb/Rank'
+import FaceRecognition from '../../dumb/FaceRecognition'
 
 function Screen(props) {
   const [input, setInput] = useState('');
@@ -20,10 +20,10 @@ function Screen(props) {
     const width = Number(image.width);
     const height = Number(image.height);
     return{
-    leftCol: clarifaiFace.left_col * width,
-    topRow: clarifaiFace.top_row * height,
-    rightCol: width - (clarifaiFace.right_col * width),
-    bottomRow: height - (clarifaiFace.bottom_row * height)
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height - (clarifaiFace.bottom_row * height)
     }
   }
   const displayFace = (box) =>{
@@ -46,7 +46,7 @@ function Screen(props) {
           const response = await fetch1.json();
           const respond = await response;
           if(response){
-            const fetch2 = await fetch('https://radiant-hamlet-18347.herokuapp.com/image', {
+              const fetch2 = await fetch('https://radiant-hamlet-18347.herokuapp.com/image', {
               method:'put',
               headers:{
                 'Content-Type':'application/json'},
@@ -55,9 +55,9 @@ function Screen(props) {
               })
             })
             const response2 = await fetch2.json();
-            await setEntries(response2)
+            setEntries(response2)
+            displayFace(calculateFaceLocation(response))
           }
-          displayFace(calculateFaceLocation(response))
           return respond
       }catch(error){
         console.log(error, 'something went wrong')
@@ -65,12 +65,12 @@ function Screen(props) {
   }
 //-------------- render
     return (
-        <div> 
+        <> 
             <Logo />
             <Rank name={props.name} entries={entries}/>
             <ImageLinkForm  onInputChange={onInputChange} onButtonSubmit={onButtonSubmit}/>
             <FaceRecognition box={box} imageUrl={imageUrl}/> 
-        </div>   
+        </>   
     );
 }
 

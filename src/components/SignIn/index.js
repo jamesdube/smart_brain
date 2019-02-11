@@ -1,20 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { PropTypes as T } from 'prop-types';
 import history from '../../history'
+import useInputChange from '../../dumb/useInputChange'
 
 function SignIn(props) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const email = useInputChange('');
+  const password = useInputChange('');
 
-//---------- method
-const onEmailChange = (event) =>{
-  setEmail(event.target.value)
-}
-
-const onPasswordChange = (event) =>{
-  setPassword(event.target.value)
-}
-
+//---- method
 const onSubmitSignIn = async () =>{
   try{
     const fetch1 = await fetch('https://radiant-hamlet-18347.herokuapp.com/signin', {
@@ -22,15 +15,15 @@ const onSubmitSignIn = async () =>{
     headers:{
       'Content-Type':'application/json'},
     body: JSON.stringify({
-      email: email,
-      password: password
+      email: email.value,
+      password: password.value
     })
   })
   const response = await fetch1.json();
   const respond = await response;
     if(response.id){
       props.loadUser(response);
-      props.fakeAuth.authenticate(() => history.push("/User"));
+      props.fakeAuth.authenticate(() => history.push(`/User/${response.name}`));
     }else{
       alert('Wrong Email or Password!')
       props.loadUser(0)
@@ -55,7 +48,7 @@ const onSubmitSignIn = async () =>{
                 type="email" 
                 name="email-address"  
                 id="email-address"
-                onChange={onEmailChange} />
+                {...email} />
             </div>
             <div className="mv3">
                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
@@ -64,7 +57,7 @@ const onSubmitSignIn = async () =>{
                 type="password" 
                 name="password"  
                 id="password" 
-                onChange={onPasswordChange}
+                {...password}
                 />
               </div>
             </fieldset>
@@ -95,4 +88,5 @@ SignIn.proptypes = {
 SignIn.defaultProps = {
   history: {}
 }
+
 export default SignIn
