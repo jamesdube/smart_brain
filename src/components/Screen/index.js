@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { PropTypes as T } from 'prop-types';
+import React, { useState, useContext } from 'react';
 
 //import component
 import Logo from '../../dumb/Logo'
 import ImageLinkForm from '../../dumb/ImageLinkForm'
 import Rank from '../../dumb/Rank'
 import FaceRecognition from '../../dumb/FaceRecognition'
+import {User} from '../../dumb/context'
+import useInputChange from '../../dumb/useInputChange'
 
 function Screen(props) {
-  const [input, setInput] = useState('');
+  const user = useContext(User)
   const [imageUrl, setImageUrl] = useState('');
   const [box, setBox] = useState({});
-  const [entries, setEntries] = useState(props.entries);
+  const [entries, setEntries] = useState(user.entries);
+  const input = useInputChange('')
 
 //---------- method
-  const calculateFaceLocation = (data) =>{
+  function calculateFaceLocation(data) {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
@@ -26,21 +28,19 @@ function Screen(props) {
       bottomRow: height - (clarifaiFace.bottom_row * height)
     }
   }
-  const displayFace = (box) =>{
+
+  function displayFace(box) {
     setBox(box)
   }
-  const onInputChange = (event) =>{
-    setInput(event.target.value)
-  }
-  const onButtonSubmit = async () => {
+  async function onButtonSubmit() {
       try{
-          setImageUrl(input)
+          setImageUrl(input.value)
           const fetch1 = await fetch('https://radiant-hamlet-18347.herokuapp.com/imageurl', {
           method:'post',
           headers:{
             'Content-Type':'application/json'},
           body: JSON.stringify({
-            input:input
+            input:input.value
             })
           })
           const response = await fetch1.json();
@@ -51,7 +51,7 @@ function Screen(props) {
               headers:{
                 'Content-Type':'application/json'},
               body: JSON.stringify({
-                id: props.id
+                id: user.id
               })
             })
             const response2 = await fetch2.json();
@@ -67,22 +67,10 @@ function Screen(props) {
     return (
         <> 
             <Logo />
-            <Rank name={props.name} entries={entries}/>
-            <ImageLinkForm  onInputChange={onInputChange} onButtonSubmit={onButtonSubmit}/>
+            <Rank  entries={entries}/>
+            <ImageLinkForm  onInputChange={input.onChange} onButtonSubmit={onButtonSubmit}/>
             <FaceRecognition box={box} imageUrl={imageUrl}/> 
         </>   
     );
 }
-
-Screen.propTypes = {
-  id: T.number.isRequired,
-  name: T.string,
-  entries: T.string,
-}
-
-Screen.defaultProps = {
-  name: '',
-  entries: ''
-}
-
 export default Screen;

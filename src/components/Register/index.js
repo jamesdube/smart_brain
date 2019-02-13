@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { PropTypes as T } from 'prop-types';
 import history from '../../history'
+
 import useInputChange from '../../dumb/useInputChange'
+import {Auth, Load} from '../../dumb/context'
 
 function Register(props) {
   const email = useInputChange('')
   const password = useInputChange('')
   const name = useInputChange('')
+  const faker = useContext(Auth)
+  const user = useContext(Load)
 
 //---------- method
 const onSubmitRegister = async () =>{
@@ -24,11 +28,12 @@ const onSubmitRegister = async () =>{
     const response = await fetch1.json()
     const respond = await response
       if(response.id){
-        props.loadUser(response)
-        props.fakeAuth.authenticate(() => history.push(`/User/${response.name}`));
+        user(response)
+        faker.authenticate(() => history.push(`/User/${response.name}`));
       }else{
-        props.loadUser(0)
-        alert('email already exist')
+        user(0)
+        alert('Please fill out the input')
+        alert('Or Your Email Already Exist')
       }
     return respond
   }catch(error){
@@ -85,8 +90,6 @@ const onSubmitRegister = async () =>{
 }
 
 Register.proptypes = {
-  loadUser: T.object.isRequired,
-  fakeAuth: T.object.isRequired,
   history: T.object
 }
 Register.defaultProps = {

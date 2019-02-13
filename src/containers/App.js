@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Route, Router, Switch, Redirect } from 'react-router-dom';
 import Particles from 'react-particles-js';
 
@@ -8,6 +8,7 @@ import SignIn from '../components/SignIn'
 import Register from '../components/Register'
 import Navigation from '../dumb/Navigation'
 import Screen from '../components/Screen'
+import {Auth, Load, User} from '../dumb/context'
 
 //-------particle
 const particlesOptions = {
@@ -21,18 +22,19 @@ const particlesOptions = {
     }
   }
 }
-//-------authenticator
+
+//--------- fake auth
 const fakeAuth = {
   isAuthenticated: false,
   authenticate(cb) {
     this.isAuthenticated = true;
     setTimeout(cb, 100); // fake async
-  },
+    },
   signout(cb) {
     this.isAuthenticated = false;
     setTimeout(cb, 100);
-   }
-};
+  }
+}
 //-------initial state
 const initialState = {
   id: '',
@@ -41,12 +43,11 @@ const initialState = {
   entries: 0,
   joined: ''
 }
-
 function App(){
   const [user,setUser] = useState(initialState) 
 
 //-------- method
-  const loadUser = (data) =>{
+  function loadUser(data) {
     setUser({
       id: data.id,
       name: data.name,
@@ -59,25 +60,32 @@ function App(){
   return (
     <Router history={history}>
       <div className="App">
-      {<Particles className="particles" 
-        params={particlesOptions}
-        />}
-      <Navigation fakeAuth={fakeAuth}/>
-      <Switch>
-        <Route exact path="/" component={() => <SignIn loadUser={loadUser} fakeAuth={fakeAuth}/>}/>
-        <Route path="/Register" component={() => <Register loadUser={loadUser} fakeAuth={fakeAuth}/>} />
-        <Private path="/User/:name" component={
-          () => <Screen id={user.id} name={user.name} entries={user.entries} />} fakeAuth={fakeAuth}
-        />
-      </Switch>
+        {<Particles className="particles" 
+          params={particlesOptions}
+          />}
+        <Auth.Provider value={fakeAuth}>
+          <Load.Provider value={loadUser}>
+            <User.Provider value={user}>
+              <Navigation />
+              <Switch>
+                <Route exact path="/" component={() => <SignIn />}/>
+                <Route path="/Register" component={() => <Register />} />
+                <Private path="/User/:name" component={
+                  () => <Screen />}
+                />
+              </Switch>
+            </User.Provider>
+          </Load.Provider>
+        </Auth.Provider>
       </div>
     </Router>
   );
 }
 
 function Private({component: Component, ...rest}) {
+  const faker = useContext(Auth)
   return (
-    <Route {...rest} render={(props) => fakeAuth.isAuthenticated 
+    <Route {...rest} render={(props) => faker.isAuthenticated 
       ?(<Component {...props} />) 
       :(<Redirect to={{pathname: "/"}}/>)
       }

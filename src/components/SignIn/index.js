@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { PropTypes as T } from 'prop-types';
 import history from '../../history'
 import useInputChange from '../../dumb/useInputChange'
+import {Auth, Load} from '../../dumb/context'
 
 function SignIn(props) {
   const email = useInputChange('');
   const password = useInputChange('');
+  const faker = useContext(Auth)
+  const user = useContext(Load)
 
 //---- method
 const onSubmitSignIn = async () =>{
@@ -22,11 +25,11 @@ const onSubmitSignIn = async () =>{
   const response = await fetch1.json();
   const respond = await response;
     if(response.id){
-      props.loadUser(response);
-      props.fakeAuth.authenticate(() => history.push(`/User/${response.name}`));
+      user(response);
+      faker.authenticate(() => history.push(`/User/${response.name}`));
     }else{
       alert('Wrong Email or Password!')
-      props.loadUser(0)
+      user(0)
     }
   return respond
   }catch(error){
@@ -80,8 +83,6 @@ const onSubmitSignIn = async () =>{
 }
 
 SignIn.proptypes = {
-  loadUser: T.object.isRequired,
-  fakeAuth: T.object.isRequired,
   history: T.object
 }
 

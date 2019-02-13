@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { PropTypes as T } from 'prop-types';
 import {withRouter} from "react-router-dom";
 
+import {Auth} from '../context'
+
 const Navigation = withRouter((props) =>{
-	if(props.fakeAuth.isAuthenticated){
+	const faker = useContext(Auth)
+	if(faker.isAuthenticated){
 		return(
 			<nav style={{display: 'flex', justifyContent:'flex-end'}}>
 				<p className="f3 link dim black underline pa3 pointer" onClick={() => {
-					props.fakeAuth.signout(() => props.history.push("/"));
+					faker.signout(() => props.history.push("/"));
 					}}>
 					Sign Out
 				</p>
@@ -32,7 +35,7 @@ Navigation.propTypes = {
 	fakeAuth: T.shape({
 		isAuthenticated: T.bool,
 		signout: T.func
-	}).isRequired,
+	}),
 	history: T.object
 }
 Navigation.defaultProps = {

@@ -1,11 +1,12 @@
-import React from 'react';
-import { PropTypes as T } from 'prop-types';
+import React, {useContext} from 'react';
+import {User} from '../context'
 
-const Rank = ({name, entries}) =>{
+const Rank = ({entries}) =>{
+	const user = useContext(User)
 	return(
 	<>
 		<div className='white f2'>
-			{`${name}, Your Current Entry Count Is ... `}
+			{`${user.name}, Your Current Entry Count Is ... `}
 		</div>
 			<div className=' white f2'>
 				{entries}
@@ -13,15 +14,4 @@ const Rank = ({name, entries}) =>{
 	</>
 	);
 } 
-
-Rank.propTypes = {
-	name: T.string,
-	entries: T.string
-}
-
-Rank.defaultProps = {
-	name: '',
-	entries: ''
-}
-
 export default Rank
